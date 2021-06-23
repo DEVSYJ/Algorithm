@@ -39,87 +39,85 @@ public class courses30_lessons42579 {
     static String[] genres = {"classic", "pop", "classic", "classic", "pop"};
     static int[] plays = {500, 600, 150, 800, 2500};
 
-    static HashMap<String, Integer> genresTotalPlays;
-
     public static void main(String[] args) {
         System.out.println(Arrays.toString(solution(genres, plays)));
     }
 
-    public static class GenrePlays implements Comparable<GenrePlays> {
-        String genres;
-        int plays;
-        int number;
+    static class Song {
+        int number; // 고유 번호
+        String genre;
+        int playCount;
 
-        public GenrePlays(String genres, int plays, int number) {
-            this.genres = genres;
-            this.plays = plays;
+        Song(int number, String genre, int playCount) {
             this.number = number;
-        }
-
-        @Override
-        public int compareTo(GenrePlays o) {
-            int genresDiff = genresTotalPlays.get(genres).compareTo(genresTotalPlays.get(o.genres));
-            if (genresDiff == 0) {
-                return plays - o.plays;
-            }
-
-            return genresDiff;
+            this.genre = genre;
+            this.playCount = playCount;
         }
     }
 
     public static int[] solution(String[] genres, int[] plays) {
-        // 장르 별 총 재생 횟수
-        // 장르 중에서 노래 별 총 재생 횟수 TOP 2
+        int[] answer;
 
-        // 모든 책을 훑었을 떄,
-        // 장르의 개수
-        // 장르의 총 재생 횟수 를 알 수 있다
-        // 0. HashMap 으로 장르 별 총 재생 횟수 {장르, 장르 총 재생 횟수}
+        // 장르 별 플레이 횟수 합
+        Map<String, Integer> genrePlayCountSum = new HashMap<>();
+        // Song은 2개만..
+        Map<String, List<Song>> top2SongList = new HashMap<>();
 
-        // 1. 장르, 플레이 횟수, 고유 번호를 넣어서 객체로 변경
-        // 2. 객체 리스트를 장르의 총 재생 횟수, 곡의 플레이 횟수로 정렬
-        // 3. 이걸 어떻게 top 2만 뽑을 것이냐....
-
-
-        genresTotalPlays = new HashMap<>();
-        GenrePlays[] genrePlays = new GenrePlays[genres.length];
         for (int i = 0; i < genres.length; i++) {
             String genre = genres[i];
-            int playCount = plays[i];
-            genrePlays[i] = new GenrePlays(genre, playCount, i);
+            Integer playCount = plays[i];
 
-            if (!genresTotalPlays.containsKey(genre)) {
-                genresTotalPlays.put(genre, playCount);
+            // 장르 별 플레이 횟수 계산
+            if (!genrePlayCountSum.containsKey(genre)) {
+                genrePlayCountSum.put(genre, playCount);
             } else {
-                genresTotalPlays.replace(genre, genresTotalPlays.get(genre) + playCount);
+                genrePlayCountSum.replace(genre, genrePlayCountSum.get(genre) + playCount);
             }
-        }
 
-        Arrays.sort(genrePlays, Collections.reverseOrder());
+            // 장르 별 top 2 곡 선정
+            List<Song> songList;
 
-        List<Integer> answer = new ArrayList<>();
+            if (!top2SongList.containsKey(genre)) {
+                songList = new ArrayList<>();
+                songList.add(new Song(i, genre, playCount));
 
-        String checkGenre = genrePlays[0].genres;
-        int checkNum = 0;
+            } else {
+                songList = top2SongList.get(genre);
 
-        for (GenrePlays genrePlay:genrePlays) {
-            if (checkNum == 2) {
-                if(checkGenre == genrePlay.genres) {
-                    continue;
+                if (songList.size() == 1) {
+                    songList.add(new Song(i, genre, playCount));
                 } else {
-                    checkNum = 0;
-                    checkGenre = genrePlay.genres;
+                    if (songList.get(1).playCount < playCount) {
+                        songList.remove(1);
+                        songList.add(new Song(i, genre, playCount));
+                    }
                 }
+
+                if (songList.get(0).playCount < playCount) {
+                    Collections.swap(songList, 0, 1);
+                }
+
             }
 
-            if (checkNum < 2 && checkGenre == genrePlay.genres) {
-                answer.add(genrePlay.number);
+            top2SongList.put(genre, songList);
+        }
 
-                checkNum++;
+        List<String> sortedGenreKeySetByPlays = new ArrayList<>(genrePlayCountSum.keySet());
+        sortedGenreKeySetByPlays.sort((o1, o2) -> genrePlayCountSum.get(o2) - genrePlayCountSum.get(o1));
+
+        List bestSongList = new ArrayList<Integer>();
+        System.out.println(sortedGenreKeySetByPlays);
+        for (int i = 0; i < sortedGenreKeySetByPlays.size(); i++) {
+            String genre = sortedGenreKeySetByPlays.get(i);
+            List<Song> songList = top2SongList.get(genre);
+            for (int j = 0; j < songList.size(); j++) {
+                System.out.println("genre : " + genre + " / number : " + songList.get(j).number);
+                bestSongList.add(songList.get(j).number);
             }
         }
 
-        int[] answerArray = answer.stream().mapToInt(i->i).toArray();
-        return answerArray;
+
+        answer = bestSongList.stream().mapToInt(i -> (int) i).toArray();;
+        return answer;
     }
 }
