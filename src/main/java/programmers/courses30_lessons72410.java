@@ -1,8 +1,8 @@
 package programmers;
 
-import org.junit.Assert;
-
 import java.util.regex.Pattern;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 // https://programmers.co.kr/learn/courses/30/lessons/72410
 /*
@@ -120,11 +120,11 @@ public class courses30_lessons72410 {
     static String output5 = "abcdefghijklmn";
 
     public static void main(String[] args) {
-        Assert.assertEquals(output1, solution(input1));
-        Assert.assertEquals(output2, solution(input2));
-        Assert.assertEquals(output3, solution(input3));
-        Assert.assertEquals(output4, solution(input4));
-        Assert.assertEquals(output5, solution(input5));
+        assertThat(output1).isEqualTo(input1);
+        assertThat(output2).isEqualTo(input2);
+        assertThat(output3).isEqualTo(input3);
+        assertThat(output4).isEqualTo(input4);
+        assertThat(output5).isEqualTo(input5);
     }
 
     public static String solution(String new_id) {
@@ -133,7 +133,7 @@ public class courses30_lessons72410 {
         // 1단계 대문자 -> 소문자 치환
         StringBuilder tempAnswer = new StringBuilder(new_id.toLowerCase());
 //        System.out.println("1단계 - " + tempAnswer);
-        
+
         // 2단계 new_id에서 알파벳 소문자, 숫자, 빼기(-), 밑줄(_), 마침표(.)를 제외한 모든 문자를 제거합니다.
         String pattern = "^[a-z0-9-_.]*$";
         for (int i = 0; i < tempAnswer.length(); i++) {
@@ -145,7 +145,7 @@ public class courses30_lessons72410 {
             }
         }
 //        System.out.println("2단계 - " + tempAnswer);
-        
+
         // 3단계 new_id에서 마침표(.)가 2번 이상 연속된 부분을 하나의 마침표(.)로 치환합니다.
         String beforeString = "";
         for (int i = 0; i < tempAnswer.length(); i++) {
