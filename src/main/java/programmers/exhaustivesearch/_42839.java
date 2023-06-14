@@ -1,10 +1,10 @@
 package programmers.exhaustivesearch;
 
+import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.junit.Test;
 
 /*
 courses/30/lessons/42839
