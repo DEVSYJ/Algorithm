@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+}
+
+group 'com.0os0o'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+    implementation 'org.assertj:assertj-core:3.23.1'
+
+    implementation 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+}
+
+test {
+    useJUnitPlatform()
+}
